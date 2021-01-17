@@ -22,17 +22,6 @@ app.use(morgan("short"));
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-	const key = req.headers.authorization;
-
-	if (!key || key !== process.env.API_KEY) {
-		return res.status(401).json({
-			error: "Incorrect authentication details"
-		});
-	}
-
-	next();
-})
 
 app.get("/", (req, res) => {
 	res.json({
@@ -56,6 +45,18 @@ app.get("/:id", async (req, res, next) => {
 	} catch (error) {
 		next(error);
 	}
+});
+
+app.use((req, res, next) => {
+	const key = req.headers.authorization;
+
+	if (!key || key !== process.env.API_KEY) {
+		return res.status(401).json({
+			error: "Incorrect authentication details"
+		});
+	}
+
+	next();
 });
 
 const schema = yup.object().shape({
