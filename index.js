@@ -35,7 +35,7 @@ app.get("/:id", async (req, res, next) => {
 		const [result] = await db.select("url").from("short_urls").where({ slug });
 		if (result) {
 			const { url } = result;
-			res.redirect(url);
+			res.redirect(301, url);
 		} else {
 			res.json({
 				msg: `URL with slug '${slug}' not found`
