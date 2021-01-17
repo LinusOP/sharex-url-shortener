@@ -22,13 +22,13 @@ app.use(morgan("short"));
 app.use(cors());
 app.use(express.json());
 
-app.get("/link", (req, res) => {
+app.get("/", (req, res) => {
 	res.json({
 		msg: "Nomad's URL Shortener"
 	});
 });
 
-app.get("/link/:id", async (req, res, next) => {
+app.get("/:id", async (req, res, next) => {
 	const { id: slug } = req.params
 
 	try {
@@ -50,7 +50,7 @@ const schema = yup.object().shape({
 	url: yup.string().url().required(),
 });
 
-app.post("/link", async (req, res, next) => {
+app.post("/", async (req, res, next) => {
 	try {
 		await schema.validate(req.body);
 	} catch (error) {
