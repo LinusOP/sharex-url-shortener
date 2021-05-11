@@ -14,7 +14,14 @@ const getSlug = customAlphabet(alphabet, 8) // Alphabet, length
 const app = express();
 const db = knex({
 	client: "mysql",
-	connection: process.env.MARIADB_CONN_STRING,
+	connection: {
+		host: process.env.DB_HOST,
+		port: process.env.DB_PORT || 3306,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		database: process.env.DB_DATABASE,
+		socketPath: process.env.DB_SOCKET_PATH
+	}
 });
 
 app.use(helmet());
@@ -25,7 +32,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
 	res.json({
-		msg: "Nomad's URL Shortener"
+		msg: "ShareX URL shortener by Nomad"
 	});
 });
 
