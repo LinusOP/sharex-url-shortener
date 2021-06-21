@@ -24,6 +24,18 @@ const db = knex({
 	}
 });
 
+const auth = (req, res, next) => {
+	const key = req.headers.authorization;
+
+	if (!key || key !== process.env.API_KEY) {
+		return res.status(401).json({
+			error: "Incorrect authentication details"
+		});
+	}
+
+	next();
+}
+
 app.use(helmet());
 app.use(morgan("short"));
 app.use(cors());
@@ -54,23 +66,11 @@ app.get("/:id", async (req, res, next) => {
 	}
 });
 
-app.use((req, res, next) => {
-	const key = req.headers.authorization;
-
-	if (!key || key !== process.env.API_KEY) {
-		return res.status(401).json({
-			error: "Incorrect authentication details"
-		});
-	}
-
-	next();
-});
-
 const schema = yup.object().shape({
 	url: yup.string().url().required(),
 });
 
-app.post("/", async (req, res, next) => {
+app.post("/", auth, async (req, res, next) => {
 	try {
 		await schema.validate(req.body);
 	} catch (error) {
@@ -92,7 +92,7 @@ app.post("/", async (req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-	res.json({
+	res.status(400).json({
 		error: error.message,
 	});
 });
