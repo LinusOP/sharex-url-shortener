@@ -74,7 +74,7 @@ app.post("/", async (req, res, next) => {
 	try {
 		await schema.validate(req.body);
 	} catch (error) {
-		next(error);
+		return next(error);
 	}
 
 	const { url } = req.body;
